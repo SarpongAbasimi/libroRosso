@@ -12,7 +12,17 @@ object FunctionalLoops {
     }
   }
 
+  def fib(aNumber: Int): Int = {
+    if(aNumber == 0){
+      0
+    } else if(aNumber == 1){
+      1
+    } else {
+      fib(aNumber - 1) + fib(aNumber - 2)
+    }
+  }
+
   def main(args: Array[String]): Unit = {
-    justLoop(11)
+    println(fib(12))
   }
 }
