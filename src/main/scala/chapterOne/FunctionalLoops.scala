@@ -13,16 +13,31 @@ object FunctionalLoops {
   }
 
   def fib(aNumber: Int): Int = {
-    if(aNumber == 0){
+    if(aNumber == 1){
       0
-    } else if(aNumber == 1){
+    } else if(aNumber == 2){
       1
     } else {
       fib(aNumber - 1) + fib(aNumber - 2)
     }
   }
 
+  def tailFib(aNumber: Int) = {
+    @tailrec
+    def go(currentNumber:Int, first:Int, second:Int):Int = {
+      if(currentNumber == 1){
+        first
+      } else if(currentNumber == 2) {
+        second
+      }else {
+        println(s"aNumber is ${currentNumber}, second is ${second}, first is ${first} , ${second + first}")
+        go(currentNumber -1, second, first + second)
+      }
+    }
+    go(aNumber,       0, 1)
+  }
+
   def main(args: Array[String]): Unit = {
-    println(fib(12))
+    println(tailFib(12))
   }
 }
