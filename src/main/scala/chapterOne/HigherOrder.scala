@@ -14,6 +14,10 @@ object HigherOrder {
     a => b => f(a, b)
   }
 
+  def uncurry[A, B, C](f: A => B => C): (A, B) => C = {
+    (a, b) => f(a)(b)
+  }
+
   def main(args: Array[String]): Unit = {
     val returnedValue = higherFunction(4, someMethod)
     println(returnedValue)
