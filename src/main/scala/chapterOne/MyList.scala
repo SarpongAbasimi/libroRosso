@@ -11,6 +11,15 @@ sealed trait Animal
 final case object Dog extends Animal
 final case class Bird(name: String) extends  Animal
 
+// Just a random thought of how the apply method would be
+// Using this we are ble to write MyList[Int](1,2,3,4)
+object MyList {
+  def apply[A](aValue: A*): MyList[A] = {
+    if(aValue.isEmpty) MyEmptyList
+    else new NonEmptyList[A](aValue.head, apply(aValue.tail: _*))
+  }
+
+}
 object MyListImplementation {
   def sum(aType: MyList[Int]):Int =  aType match {
     case MyEmptyList => 0
