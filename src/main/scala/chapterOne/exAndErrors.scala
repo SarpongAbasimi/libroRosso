@@ -31,6 +31,16 @@ object exAndErrors {
     else xs.sum / xs.length
   }
 
+  def secondOptionToAvoidMeanException(xs: Seq[Double], ifEmpty: Double): Double = {
+    if(xs.isEmpty) ifEmpty
+    else xs.sum / xs.length
+  }
+
+  def thirdOptionToAvoidMeanException(xs: Seq[Double]) : Option[Double] = {
+    if(xs.isEmpty) None
+    else Some(xs.sum / xs.length)
+  }
+
   def main(args: Array[String]): Unit = {
     mean(Seq())
   }
