@@ -41,6 +41,21 @@ object exAndErrors {
     else Some(xs.sum / xs.length)
   }
 
+  def someTry[A](aStringNumber: String): Option[Int] = {
+    Try(aStringNumber.toInt)
+  }
+
+  def Try[A](f: => A): Option[A] = {
+    try Some(f)
+    catch {case _ : Exception => None}
+  }
+
+  def meanWithEither(aSeqOfInt: IndexedSeq[Int]): Either[String, Double] = {
+    if(aSeqOfInt.isEmpty){
+      Left("Seq can't be empty")
+    } else Right(aSeqOfInt.sum/ aSeqOfInt.length)
+  }
+
   def main(args: Array[String]): Unit = {
     mean(Seq())
   }
