@@ -1,15 +1,16 @@
 package streaming
 
+import cats.effect.kernel.Clock
 import fs2.{Stream, text}
-import fs2.io.file.Files
-import fs2.io.file.Path
+import fs2.io.file.{Files, Flags, Path}
 import cats.effect.{ExitCode, IO, IOApp}
 
 
 
 object Main extends IOApp {
   override def run(args: List[String]): IO[ExitCode] = {
-    myStream.compile.drain.as(ExitCode.Success)
+//    myStream.compile.drain.as(ExitCode.Success)
+    readFromAFile("b.txt", "tmpDir").compile.drain.as(ExitCode.Success)
   }
 
   def createDirectory(name: String) =  {
@@ -30,7 +31,7 @@ object Main extends IOApp {
 
   def myStream: Stream[IO, String] =  {
     Stream[IO, String]("name", "Sam", "Yaaa", "RandomName", "Benson")
-      .repeat.take(19)
+      .repeat.take(1000000)
       .intersperse("\n")
       .through(text.utf8.encode)
       .evalTap(eachByte => IO.println(s"Each byte ${eachByte}"))
@@ -56,8 +57,15 @@ object Main extends IOApp {
         .through(text.utf8.decode)
         .through(text.utf8.encode)
         .through(Files[IO].writeAll(Path("./a.txt")))
-
   }
 
+  def readFromAFile(fileName: String, dirName: String) = {
+    Stream.eval( Files[IO]
+      .createDirectory(Path(dirName)))
+      .flatMap(_ => Stream.eval(Files[IO].createFile(Path(s"./${dirName}/${fileName}"))))
+      .handleErrorWith(_ => Stream[IO, Int](1))
+      .flatMap(_ => Files[IO].readAll(Path("./a.txt"), 1000, Flags.Read))
+      .through(Files[IO].writeAll(Path(s"${dirName}/${fileName}")))
+  }
 
 }
