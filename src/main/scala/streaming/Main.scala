@@ -1,6 +1,5 @@
 package streaming
 
-import cats.effect.kernel.Clock
 import fs2.{Stream, text}
 import fs2.io.file.{Files, Flags, Path}
 import cats.effect.{ExitCode, IO, IOApp}
@@ -31,7 +30,7 @@ object Main extends IOApp {
 
   def myStream: Stream[IO, String] =  {
     Stream[IO, String]("name", "Sam", "Yaaa", "RandomName", "Benson")
-      .repeat.take(1000000)
+      .repeat.take(100)
       .intersperse("\n")
       .through(text.utf8.encode)
       .evalTap(eachByte => IO.println(s"Each byte ${eachByte}"))
@@ -65,6 +64,10 @@ object Main extends IOApp {
       .flatMap(_ => Stream.eval(Files[IO].createFile(Path(s"./${dirName}/${fileName}"))))
       .handleErrorWith(_ => Stream[IO, Int](1))
       .flatMap(_ => Files[IO].readAll(Path("./a.txt"), 1000, Flags.Read))
+      .through(text.utf8.decode)
+      .filter(name => !name.equals("Sam"))
+      .evalTap(e => IO.println(s"${e} -> ${e.equals("Sam")}"))
+      .through(text.utf8.encode)
       .through(Files[IO].writeAll(Path(s"${dirName}/${fileName}")))
   }
 
